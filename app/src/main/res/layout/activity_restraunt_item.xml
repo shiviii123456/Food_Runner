@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Restraunt_item"
+    android:orientation="vertical"
+    >
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/appcolor"
+        />
+    <TextView
+        android:id="@+id/chooseMenu"
+        android:layout_below="@id/toolbarItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Choose From The Menu listed Below"
+        android:padding="10dp"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:drawableEnd="@drawable/ic_heart"
+        />
+    <View
+        android:layout_below="@id/chooseMenu"
+        android:id="@+id/SplitLine_hor1"
+        android:layout_width="match_parent"
+        android:layout_height= "1dp"
+        android:background="@color/black"
+         />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerviewItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:id="@+id/progressbarItem"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            />
+    </RelativeLayout>
+</RelativeLayout>
