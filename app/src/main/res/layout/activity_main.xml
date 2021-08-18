@@ -21,7 +21,6 @@
         android:background="@drawable/login"
         android:backgroundTint="@color/white"
         android:hint="MobileNumber"
-        android:inputType="textPassword"
         android:padding="10dp"
         android:drawableLeft="@drawable/ic_action_name"
         android:drawablePadding="10dp"

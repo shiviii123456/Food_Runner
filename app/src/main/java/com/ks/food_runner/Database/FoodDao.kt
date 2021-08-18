@@ -32,6 +32,6 @@ interface FoodDao {
     @Query("SELECT * FROM CartEntity WHERE foodItem_Id=:restaurant_id")
     fun menuList(restaurant_id:String):List<CartEntities>
 
-//    @Query("SELECT * FROM CartEntity WHERE restaurantId IN (:addedItems)")
-//    fun test(addedItems:List<Int>):List<CartEntities>
+    @Query("SELECT * FROM CartEntity")
+    fun test():List<CartEntities>
 }

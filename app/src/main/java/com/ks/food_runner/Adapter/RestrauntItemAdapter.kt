@@ -1,7 +1,12 @@
 package com.ks.food_runner.Adapter
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
+import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +14,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
@@ -21,6 +27,7 @@ import java.lang.Exception
 
 class RestrauntItemAdapter(val context: Context, val food:List<RestrauntItem>):RecyclerView.Adapter<RestrauntItemAdapter.ViewHolder>() {
     var listItem= mutableListOf<Int>()
+    var bool=false
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -39,6 +46,68 @@ class RestrauntItemAdapter(val context: Context, val food:List<RestrauntItem>):R
             food[position].ItemPrice,
             food[position].itemName,
         )
+
+
+            holder.btnItem.setOnClickListener(){
+                var foodArray=TotalItem(context).execute().get()
+//                Toast.makeText(context,"$foodArray",Toast.LENGTH_LONG).show()
+                if(foodArray.size == 0){
+//                    Toast.makeText(context,"Hello",Toast.LENGTH_LONG).show()
+                    val insert=DbAsyncCart(context,2,cartEntities).execute().get()
+                    if(insert){
+                        val color=ContextCompat.getColor(context,R.color.secondarycolor)
+                        holder.btnItem.setBackgroundColor(color)
+                        holder.btnItem.text="REMOVE"
+                    }
+                    else{
+                        Toast.makeText(context,"Some Error Occured",Toast.LENGTH_LONG).show()
+                    }
+                }
+                else{
+                    for (i in 0 until foodArray.size) {
+                        Log.d("output", "${foodArray.get(i).foodItemId}")
+                        if (foodArray.get(i).foodItemId == cartEntities.foodItemId) {
+                            bool = true
+                        }
+                    }
+                        if(bool) {
+                            var checkItem = TotalAddItem(context, cartEntities).execute().get()
+                            Log.d("message","$checkItem")
+                            if (TotalAddItem(context, cartEntities).execute().get() == null) {
+                                val insert = DbAsyncCart(context, 2, cartEntities).execute().get()
+                                if (insert) {
+                                    val color = ContextCompat.getColor(context, R.color.secondarycolor)
+                                    holder.btnItem.setBackgroundColor(color)
+                                    holder.btnItem.text = "REMOVE"
+                                } else {
+                                    Toast.makeText(context, "Some Error Occured", Toast.LENGTH_LONG).show()
+                                }
+                            } else {
+                                val remove = DbAsyncCart(context, 3, cartEntities).execute().get()
+                                if (remove) {
+                                    val color = ContextCompat.getColor(context, R.color.appcolor)
+                                    holder.btnItem.setBackgroundColor(color)
+                                    holder.btnItem.text = "ADD"
+                                } else {
+                                    Toast.makeText(context, "Some Error Occured", Toast.LENGTH_LONG)
+                                        .show()
+                                }
+                            }
+                        }
+                        else{
+                            var dialog= AlertDialog.Builder(context)
+                            dialog.setTitle("Error")
+                            dialog.setMessage("You can order only from one restraunt at a time")
+                            dialog.setPositiveButton("Cancel"){text,listener->
+
+                            }
+                            dialog.create()
+                            dialog.show()
+                            }
+                }
+                }
+
+
         if(TotalAddItem(context,cartEntities).execute().get() == null)
         {
             val color=ContextCompat.getColor(context,R.color.appcolor)
@@ -51,33 +120,33 @@ class RestrauntItemAdapter(val context: Context, val food:List<RestrauntItem>):R
             holder.btnItem.text="REMOVE"
         }
 
-        holder.btnItem.setOnClickListener(){
-            var checkItem=TotalAddItem(context,cartEntities).execute().get()
-            Toast.makeText(context,"$checkItem",Toast.LENGTH_LONG).show()
-            if(TotalAddItem(context,cartEntities).execute().get() == null){
-               val insert=DbAsyncCart(context,2,cartEntities).execute().get()
-                if(insert){
-                    val color=ContextCompat.getColor(context,R.color.secondarycolor)
-                    holder.btnItem.setBackgroundColor(color)
-                    holder.btnItem.text="REMOVE"
-                }
-                else{
-                    Toast.makeText(context,"Some Error Occured",Toast.LENGTH_LONG).show()
-                }
-            }
-            else{
-               val remove=DbAsyncCart(context,3,cartEntities).execute().get()
-                if(remove){
-                    val color=ContextCompat.getColor(context,R.color.appcolor)
-                    holder.btnItem.setBackgroundColor(color)
-                    holder.btnItem.text="ADD"
-                }
-                else{
-                    Toast.makeText(context,"Some Error Occured",Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-    }
+//        holder.btnItem.setOnClickListener(){
+//            var checkItem=TotalAddItem(context,cartEntities).execute().get()
+//            Toast.makeText(context,"$checkItem",Toast.LENGTH_LONG).show()
+//            if(TotalAddItem(context,cartEntities).execute().get() == null){
+//               val insert=DbAsyncCart(context,2,cartEntities).execute().get()
+//                if(insert){
+//                    val color=ContextCompat.getColor(context,R.color.secondarycolor)
+//                    holder.btnItem.setBackgroundColor(color)
+//                    holder.btnItem.text="REMOVE"
+//                }
+//                else{
+//                    Toast.makeText(context,"Some Error Occured",Toast.LENGTH_LONG).show()
+//                }
+//            }
+//            else{
+//               val remove=DbAsyncCart(context,3,cartEntities).execute().get()
+//                if(remove){
+//                    val color=ContextCompat.getColor(context,R.color.appcolor)
+//                    holder.btnItem.setBackgroundColor(color)
+//                    holder.btnItem.text="ADD"
+//                }
+//                else{
+//                    Toast.makeText(context,"Some Error Occured",Toast.LENGTH_LONG).show()
+//                }
+//            }
+//        }
+  }
     override fun getItemCount(): Int {
         return food.size
     }
@@ -115,7 +184,7 @@ class RestrauntItemAdapter(val context: Context, val food:List<RestrauntItem>):R
     class TotalAddItem(val context: Context,var cartEntities: CartEntities): AsyncTask<Void, Void, CartEntities>(){
         var db= Room.databaseBuilder(context, FoodsDatabase::class.java,"food-database").build()
         override fun doInBackground(vararg p0: Void?): CartEntities {
-           return  db.foodDao().checkItem(cartEntities.restaurantId)
+            return  db.foodDao().checkItem(cartEntities.restaurantId)
 
         }
     }
@@ -123,6 +192,13 @@ class RestrauntItemAdapter(val context: Context, val food:List<RestrauntItem>):R
         var db= Room.databaseBuilder(context, FoodsDatabase::class.java,"food-database").build()
         override fun doInBackground(vararg p0: Void?): List<CartEntities> {
             return  db.foodDao().menuList(cartEntities.foodItemId)
+
+        }
+    }
+    class TotalItem(val context: Context): AsyncTask<Void, Void, List<CartEntities>>(){
+        var db= Room.databaseBuilder(context, FoodsDatabase::class.java,"food-database").build()
+        override fun doInBackground(vararg p0: Void?): List<CartEntities> {
+            return  db.foodDao().test()
 
         }
     }

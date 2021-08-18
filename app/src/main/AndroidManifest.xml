@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Food_Runner"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Add_To_Cart"></activity>
+        <activity android:name=".Places_Order"></activity>
+        <activity android:name=".Add_To_Cart" />
         <activity android:name=".AddToCart" />
         <activity android:name=".Restraunt_item" />
         <activity android:name=".SignUp" />
