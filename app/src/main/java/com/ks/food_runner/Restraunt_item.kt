@@ -8,6 +8,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -51,6 +54,7 @@ class Restraunt_item : AppCompatActivity() {
                             var itemInfo= foodData.getJSONObject(i)
                             val foodObject= RestrauntItem(
                                 "${i+1}",
+                                itemInfo.getString("id"),
                                 itemInfo.getString("name"),
                                 itemInfo.getString("cost_for_one"),
                                 itemInfo.getString("restaurant_id")
@@ -107,8 +111,22 @@ class Restraunt_item : AppCompatActivity() {
         supportActionBar?.title=restrauntName
     }
 
-    override fun onSupportNavigateUp(): Boolean {
+   override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
+        return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.cart,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id=item.itemId
+        if(id == R.id.addToCart){
+            val intent=Intent(this@Restraunt_item,Add_To_Cart::class.java)
+            startActivity(intent)
+        }
         return true
     }
 }

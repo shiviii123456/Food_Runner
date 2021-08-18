@@ -12,3 +12,12 @@ data class FoodEntity(
     @ColumnInfo(name = "ratings") val rating:String,
    @ColumnInfo(name="restaurant_Image") val restaurantImage:String
 )
+
+
+@Entity(tableName = "CartEntity")
+data class CartEntities (
+    @PrimaryKey val restaurantId:Int,
+    @ColumnInfo(name="foodItem_Id") val foodItemId:String,
+    @ColumnInfo(name="foodItem_Price") val foodItemPrice:String,
+    @ColumnInfo(name="foodItem_Name") val foodItemName:String,
+)

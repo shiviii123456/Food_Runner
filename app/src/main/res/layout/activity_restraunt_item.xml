@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Restraunt_item"
-    android:orientation="vertical"
     >
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarItem"

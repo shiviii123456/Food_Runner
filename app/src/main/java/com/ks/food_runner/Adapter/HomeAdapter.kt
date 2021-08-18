@@ -100,17 +100,17 @@ class HomeAdapter(val context: Context, val food:List<Restaurant>):RecyclerView.
             when(mode){
                 1->{
                    val food:FoodEntity?=db.foodDao().checkFook(foodEntity.id.toString())
-                   db.close()
+//                   db.close()
                     return food != null
                 }
                 2->{
                    db.foodDao().insertFood(foodEntity)
-                 db.close()
+//                 db.close()
                    return true
                 }
                 3->{
                    db.foodDao().removeFood(foodEntity)
-                  db.close()
+//                  db.close()
                     return true
                 }
             }

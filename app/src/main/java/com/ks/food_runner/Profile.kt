@@ -47,6 +47,7 @@ class Profile : Fragment() {
         progressBarProfile=view.findViewById(R.id.progressBarProfile)
         foodLists=TotalFoodProfile(activity as Context).execute().get()
 
+        Toast.makeText(activity as Context,"$foodLists",Toast.LENGTH_LONG).show()
         if(activity != null){
             progressBarProfile.setVisibility(View.GONE)
             recyclerviewProfile.layoutManager= LinearLayoutManager(activity)

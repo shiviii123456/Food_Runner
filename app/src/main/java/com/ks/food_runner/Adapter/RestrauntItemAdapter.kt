@@ -1,17 +1,26 @@
 package com.ks.food_runner.Adapter
 
 import android.content.Context
+import android.os.AsyncTask
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
+import com.ks.food_runner.Database.CartEntities
+import com.ks.food_runner.Database.FoodEntity
+import com.ks.food_runner.Database.FoodsDatabase
 import com.ks.food_runner.Model.RestrauntItem
 import com.ks.food_runner.R
+import java.lang.Exception
 
 class RestrauntItemAdapter(val context: Context, val food:List<RestrauntItem>):RecyclerView.Adapter<RestrauntItemAdapter.ViewHolder>() {
+    var listItem= mutableListOf<Int>()
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -23,9 +32,52 @@ class RestrauntItemAdapter(val context: Context, val food:List<RestrauntItem>):R
     override fun onBindViewHolder(holder: RestrauntItemAdapter.ViewHolder, position: Int) {
         holder.restaurantNameItem.text=food[position].itemName
         holder.foodPriceItem.text="Rs. "+food[position].ItemPrice
-        holder.itemId.text=food[position].ItemId
-    }
+        holder.itemId.text=food[position].num
+        var cartEntities=CartEntities(
+            food[position].ItemId?.toInt(),
+            food[position].Restraunt_id,
+            food[position].ItemPrice,
+            food[position].itemName,
+        )
+        if(TotalAddItem(context,cartEntities).execute().get() == null)
+        {
+            val color=ContextCompat.getColor(context,R.color.appcolor)
+            holder.btnItem.setBackgroundColor(color)
+            holder.btnItem.text="ADD"
+        }
+        else{
+            val color=ContextCompat.getColor(context,R.color.secondarycolor)
+            holder.btnItem.setBackgroundColor(color)
+            holder.btnItem.text="REMOVE"
+        }
 
+        holder.btnItem.setOnClickListener(){
+            var checkItem=TotalAddItem(context,cartEntities).execute().get()
+            Toast.makeText(context,"$checkItem",Toast.LENGTH_LONG).show()
+            if(TotalAddItem(context,cartEntities).execute().get() == null){
+               val insert=DbAsyncCart(context,2,cartEntities).execute().get()
+                if(insert){
+                    val color=ContextCompat.getColor(context,R.color.secondarycolor)
+                    holder.btnItem.setBackgroundColor(color)
+                    holder.btnItem.text="REMOVE"
+                }
+                else{
+                    Toast.makeText(context,"Some Error Occured",Toast.LENGTH_LONG).show()
+                }
+            }
+            else{
+               val remove=DbAsyncCart(context,3,cartEntities).execute().get()
+                if(remove){
+                    val color=ContextCompat.getColor(context,R.color.appcolor)
+                    holder.btnItem.setBackgroundColor(color)
+                    holder.btnItem.text="ADD"
+                }
+                else{
+                    Toast.makeText(context,"Some Error Occured",Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
     override fun getItemCount(): Int {
         return food.size
     }
@@ -35,5 +87,43 @@ class RestrauntItemAdapter(val context: Context, val food:List<RestrauntItem>):R
         var restaurantNameItem:TextView=itemView.findViewById(R.id.restaurantNameItem)
         var foodPriceItem:TextView=itemView.findViewById(R.id.foodPriceItem)
         var btnItem: Button =itemView.findViewById(R.id.btnItem)
+    }
+    class DbAsyncCart(val context: Context,val mode:Int,val cartEntities: CartEntities): AsyncTask<Void, Void, Boolean>(){
+
+        val db= Room.databaseBuilder(context, FoodsDatabase::class.java,"food-database").build()
+        override fun doInBackground(vararg p0: Void?): Boolean {
+            when(mode){
+                1->{
+                    val foodItem:CartEntities?=db.foodDao().checkItem(cartEntities.restaurantId)
+                    db.close()
+                    return foodItem != null
+                }
+                2->{
+                    db.foodDao().insertItem(cartEntities)
+                    db.close()
+                    return true
+                }
+                3->{
+                    db.foodDao().deleteItem(cartEntities)
+                    db.close()
+                    return true
+                }
+            }
+            return false
+        }
+    }
+    class TotalAddItem(val context: Context,var cartEntities: CartEntities): AsyncTask<Void, Void, CartEntities>(){
+        var db= Room.databaseBuilder(context, FoodsDatabase::class.java,"food-database").build()
+        override fun doInBackground(vararg p0: Void?): CartEntities {
+           return  db.foodDao().checkItem(cartEntities.restaurantId)
+
+        }
+    }
+    class TotalFoodItem(val context: Context,var cartEntities:CartEntities): AsyncTask<Void, Void, List<CartEntities>>(){
+        var db= Room.databaseBuilder(context, FoodsDatabase::class.java,"food-database").build()
+        override fun doInBackground(vararg p0: Void?): List<CartEntities> {
+            return  db.foodDao().menuList(cartEntities.foodItemId)
+
+        }
     }
 }
