@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
@@ -24,14 +25,22 @@ class MainActivity : AppCompatActivity() {
     lateinit var password:EditText
     lateinit var mobileNumber:EditText
     lateinit var signUp:TextView
+    lateinit var sharedPreferences: SharedPreferences
+    var isLoggedIn=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        sharedPreferences=getSharedPreferences(getString(R.string.shared_pref), Context.MODE_PRIVATE)
+        isLoggedIn=sharedPreferences.getBoolean("isLoggedIn",false)
         signUp=findViewById(R.id.signUp)
         loginbtn=findViewById(R.id.loginbtn)
 
-
+       if(isLoggedIn){
+           val intent= Intent(this@MainActivity,Home::class.java)
+           startActivity(intent)
+           finish()
+       }
         loginbtn.setOnClickListener(){
             password=findViewById(R.id.password)
             var  pass=password.text.toString()
@@ -48,8 +57,10 @@ class MainActivity : AppCompatActivity() {
                     var data=it.getJSONObject("data")
                     var success=data.getBoolean("success")
                     if(success){
+                        sharedPreferencesfunc()
                         val intent= Intent(this@MainActivity,Home::class.java)
                         startActivity(intent)
+                        finish()
                     }
                     else{
                         Toast.makeText(this@MainActivity,"Invalid Email and Password",Toast.LENGTH_LONG).show()
@@ -92,6 +103,10 @@ class MainActivity : AppCompatActivity() {
         signUp.setOnClickListener(){
            val intent= Intent(this@MainActivity,SignUp::class.java)
             startActivity(intent)
+            finish()
         }
+    }
+   public fun sharedPreferencesfunc(){
+        sharedPreferences.edit().putBoolean("isLoggedIn",true).apply()
     }
 }

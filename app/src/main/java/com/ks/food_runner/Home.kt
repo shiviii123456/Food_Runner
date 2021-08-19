@@ -1,5 +1,7 @@
 package com.ks.food_runner
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -16,9 +18,13 @@ class Home : AppCompatActivity() {
     lateinit var drawerLayout: DrawerLayout
     lateinit var coordinatorLayout: CoordinatorLayout
     lateinit var navigationView: NavigationView
+    lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        sharedPreferences =
+            getSharedPreferences(getString(R.string.shared_pref), Context.MODE_PRIVATE)
+
         toolbar=findViewById(R.id.toolbar)
         drawerLayout=findViewById(R.id.drawerLayout)
         coordinatorLayout=findViewById(R.id.coordinatorLayout)
@@ -29,47 +35,54 @@ class Home : AppCompatActivity() {
         drawerLayout.addDrawerListener(toogleState)//add click listeners to the toogleButton
         toogleState.syncState() //it changes the hamburger button to back button when the navigation bar open
 
+        sharedPreferences =
+            getSharedPreferences(getString(R.string.shared_pref), Context.MODE_PRIVATE)
+
         openHome()
 
-      navigationView.setNavigationItemSelectedListener {
+        navigationView.setNavigationItemSelectedListener {
 
-          var id=it.itemId
+            var id=it.itemId
 
-          when(id){
-              R.id.home->{
-                openHome()
-              }
-              R.id.userProfile->{
-                 supportFragmentManager.beginTransaction().replace(R.id.frame,Faq())
-                     .commit()
-                  supportActionBar?.title="Testing"
-                  drawerLayout.closeDrawers()
-              }
-              R.id.orderHistory->{
-                  supportFragmentManager.beginTransaction().replace(R.id.frame,OrderHistory())
-                      .commit()
-                  supportActionBar?.title="Order History"
-                  drawerLayout.closeDrawers()
-              }
-              R.id.favRestraunt->{
-                  supportFragmentManager.beginTransaction().replace(R.id.frame,Profile())
-                      .commit()
-                  supportActionBar?.title="Favouraites Restraunts"
-                  drawerLayout.closeDrawers()
-              }
-              R.id.faq->{
-                  supportFragmentManager.beginTransaction().replace(R.id.frame,Faq())
-                      .commit()
-                  supportActionBar?.title="Favouraites Restraunts"
-                  drawerLayout.closeDrawers()
-              }
-              R.id.logout->{
-                  Toast.makeText(this@Home,"logout",Toast.LENGTH_LONG).show()
-              }
-          }
+            when(id){
+                R.id.home->{
+                    openHome()
+                }
+                R.id.userProfile->{
+                    supportFragmentManager.beginTransaction().replace(R.id.frame,Faq())
+                        .addToBackStack("profile")
+                        .commit()
+                    supportActionBar?.title="Testing"
+                    drawerLayout.closeDrawers()
+                }
+                R.id.orderHistory->{
+                    supportFragmentManager.beginTransaction().replace(R.id.frame,OrderHistory())
+                        .addToBackStack("order History")
+                        .commit()
+                    supportActionBar?.title="Order History"
+                    drawerLayout.closeDrawers()
+                }
+                R.id.favRestraunt->{
+                    supportFragmentManager.beginTransaction().replace(R.id.frame,Profile())
+                        .addToBackStack("fav restraunt")
+                        .commit()
+                    supportActionBar?.title="Favouraites Restraunts"
+                    drawerLayout.closeDrawers()
+                }
+                R.id.faq->{
+                    supportFragmentManager.beginTransaction().replace(R.id.frame,Faq())
+                        .addToBackStack("faq")
+                        .commit()
+                    supportActionBar?.title="Favouraites Restraunts"
+                    drawerLayout.closeDrawers()
+                }
+                R.id.logout->{
+                    Toast.makeText(this@Home,"logout",Toast.LENGTH_LONG).show()
+                }
+            }
 
-         return@setNavigationItemSelectedListener true
-      }
+            return@setNavigationItemSelectedListener true
+        }
     }
     fun settingToolbar(){
         setSupportActionBar(toolbar)

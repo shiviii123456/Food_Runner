@@ -2,6 +2,7 @@
     <string name="app_name">Food_Runner</string>
     <string name="open">openDrawer</string>
     <string name="close">closeDrawer</string>
+    <string name="shared_pref">SharedPrefrences</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

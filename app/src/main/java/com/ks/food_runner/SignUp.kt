@@ -1,7 +1,9 @@
 package com.ks.food_runner
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
@@ -23,10 +25,12 @@ class SignUp : AppCompatActivity() {
     lateinit var userPassword:EditText
     lateinit var userCnfPassword:EditText
     lateinit var register: Button
+    lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
+        sharedPreferences=getSharedPreferences(getString(R.string.shared_pref),Context.MODE_PRIVATE)
         userName=findViewById(R.id.userName)
         userEmail=findViewById(R.id.userEmail)
         userMobile=findViewById(R.id.userMobile)
@@ -58,8 +62,10 @@ class SignUp : AppCompatActivity() {
                 var data=it.getJSONObject("data")
                 var success=data.getBoolean("success")
                 if(success){
+                    sharedPrefrenceSignup()
                     val intent= Intent(this@SignUp,Home::class.java)
                     startActivity(intent)
+                    finish()
                 }
                 else{
                     Toast.makeText(this@SignUp,"Already Registered", Toast.LENGTH_LONG).show()
@@ -94,5 +100,8 @@ class SignUp : AppCompatActivity() {
             dialog.show()
         }
     }
+    }
+    fun sharedPrefrenceSignup(){
+        sharedPreferences.edit().putBoolean("isLoggedIn",true).apply()
     }
 }
