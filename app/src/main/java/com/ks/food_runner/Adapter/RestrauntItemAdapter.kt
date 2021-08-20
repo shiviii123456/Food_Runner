@@ -120,32 +120,6 @@ class RestrauntItemAdapter(val context: Context, val food:List<RestrauntItem>):R
             holder.btnItem.text="REMOVE"
         }
 
-//        holder.btnItem.setOnClickListener(){
-//            var checkItem=TotalAddItem(context,cartEntities).execute().get()
-//            Toast.makeText(context,"$checkItem",Toast.LENGTH_LONG).show()
-//            if(TotalAddItem(context,cartEntities).execute().get() == null){
-//               val insert=DbAsyncCart(context,2,cartEntities).execute().get()
-//                if(insert){
-//                    val color=ContextCompat.getColor(context,R.color.secondarycolor)
-//                    holder.btnItem.setBackgroundColor(color)
-//                    holder.btnItem.text="REMOVE"
-//                }
-//                else{
-//                    Toast.makeText(context,"Some Error Occured",Toast.LENGTH_LONG).show()
-//                }
-//            }
-//            else{
-//               val remove=DbAsyncCart(context,3,cartEntities).execute().get()
-//                if(remove){
-//                    val color=ContextCompat.getColor(context,R.color.appcolor)
-//                    holder.btnItem.setBackgroundColor(color)
-//                    holder.btnItem.text="ADD"
-//                }
-//                else{
-//                    Toast.makeText(context,"Some Error Occured",Toast.LENGTH_LONG).show()
-//                }
-//            }
-//        }
   }
     override fun getItemCount(): Int {
         return food.size
@@ -188,18 +162,17 @@ class RestrauntItemAdapter(val context: Context, val food:List<RestrauntItem>):R
 
         }
     }
-    class TotalFoodItem(val context: Context,var cartEntities:CartEntities): AsyncTask<Void, Void, List<CartEntities>>(){
-        var db= Room.databaseBuilder(context, FoodsDatabase::class.java,"food-database").build()
-        override fun doInBackground(vararg p0: Void?): List<CartEntities> {
-            return  db.foodDao().menuList(cartEntities.foodItemId)
-
-        }
-    }
+//    class TotalFoodItem(val context: Context,var cartEntities:CartEntities): AsyncTask<Void, Void, List<CartEntities>>(){
+//        var db= Room.databaseBuilder(context, FoodsDatabase::class.java,"food-database").build()
+//        override fun doInBackground(vararg p0: Void?): List<CartEntities> {
+//            return  db.foodDao().menuList(cartEntities.foodItemId)
+//
+//        }
+//    }
     class TotalItem(val context: Context): AsyncTask<Void, Void, List<CartEntities>>(){
         var db= Room.databaseBuilder(context, FoodsDatabase::class.java,"food-database").build()
         override fun doInBackground(vararg p0: Void?): List<CartEntities> {
             return  db.foodDao().test()
-
         }
     }
 }

@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
@@ -18,10 +19,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.ks.food_runner.Adapter.RestrauntItemAdapter
+import com.ks.food_runner.Database.CartEntities
+import com.ks.food_runner.Database.FoodsDatabase
 import com.ks.food_runner.Model.RestrauntItem
 import com.ks.food_runner.util.ConnectionManager
 
@@ -128,5 +132,28 @@ class Restraunt_item : AppCompatActivity() {
             startActivity(intent)
         }
         return true
+    }
+
+    override fun onBackPressed() {
+        var listRestraunt=TotalItemPresent(this@Restraunt_item).execute().get()
+        if(listRestraunt.size != 0){
+            for(i in 0 until listRestraunt.size){
+                RemoveItemPresent(this@Restraunt_item,listRestraunt.get(i)).execute().get()
+            }
+        }
+        super.onBackPressed()
+    }
+    class TotalItemPresent(val context: Context): AsyncTask<Void, Void, List<CartEntities>>(){
+        var db= Room.databaseBuilder(context, FoodsDatabase::class.java,"food-database").build()
+        override fun doInBackground(vararg p0: Void?): List<CartEntities> {
+            return  db.foodDao().test()
+        }
+    }
+    class RemoveItemPresent(val context: Context,var cartEntities: CartEntities): AsyncTask<Void, Void, Boolean>(){
+        var db= Room.databaseBuilder(context, FoodsDatabase::class.java,"food-database").build()
+        override fun doInBackground(vararg p0: Void?):Boolean {
+              db.foodDao().deleteItem(cartEntities)
+             return true
+        }
     }
 }

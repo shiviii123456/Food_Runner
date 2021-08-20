@@ -26,11 +26,13 @@ class SignUp : AppCompatActivity() {
     lateinit var userCnfPassword:EditText
     lateinit var register: Button
     lateinit var sharedPreferences: SharedPreferences
+    lateinit var signupPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
         sharedPreferences=getSharedPreferences(getString(R.string.shared_pref),Context.MODE_PRIVATE)
+        signupPreferences=getSharedPreferences(getString(R.string.login_pref),Context.MODE_PRIVATE)
         userName=findViewById(R.id.userName)
         userEmail=findViewById(R.id.userEmail)
         userMobile=findViewById(R.id.userMobile)
@@ -62,7 +64,19 @@ class SignUp : AppCompatActivity() {
                 var data=it.getJSONObject("data")
                 var success=data.getBoolean("success")
                 if(success){
+                    var userData=data.getJSONObject("data")
+                    val user_id=userData.getString("user_id")
+                    val name=userData.getString("name")
+                    val email=userData.getString("email")
+                    val mobile_number=userData.getString("mobile_number")
+                    val address=userData.getString("address")
                     sharedPrefrenceSignup()
+                    signupPreferences.edit().putString("user_id",user_id).apply()
+                    signupPreferences.edit().putString("name",name).apply()
+                    signupPreferences.edit().putString("email",email).apply()
+                    signupPreferences.edit().putString("mobile_number",mobile_number).apply()
+                    signupPreferences.edit().putString("address",address).apply()
+
                     val intent= Intent(this@SignUp,Home::class.java)
                     startActivity(intent)
                     finish()

@@ -26,12 +26,14 @@ class MainActivity : AppCompatActivity() {
     lateinit var mobileNumber:EditText
     lateinit var signUp:TextView
     lateinit var sharedPreferences: SharedPreferences
+    lateinit var loginSharedPreferences: SharedPreferences
     var isLoggedIn=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         sharedPreferences=getSharedPreferences(getString(R.string.shared_pref), Context.MODE_PRIVATE)
+        loginSharedPreferences=getSharedPreferences(getString(R.string.login_pref),Context.MODE_PRIVATE)
         isLoggedIn=sharedPreferences.getBoolean("isLoggedIn",false)
         signUp=findViewById(R.id.signUp)
         loginbtn=findViewById(R.id.loginbtn)
@@ -58,6 +60,19 @@ class MainActivity : AppCompatActivity() {
                     var success=data.getBoolean("success")
                     if(success){
                         sharedPreferencesfunc()
+                        var userData=data.getJSONObject("data")
+                        val user_id=userData.getString("user_id")
+                        val name=userData.getString("name")
+                        val email=userData.getString("email")
+                        val mobile_number=userData.getString("mobile_number")
+                        val address=userData.getString("address")
+
+                        loginSharedPreferences.edit().putString("user_id",user_id).apply()
+                        loginSharedPreferences.edit().putString("name",name).apply()
+                        loginSharedPreferences.edit().putString("email",email).apply()
+                        loginSharedPreferences.edit().putString("mobile_number",mobile_number).apply()
+                        loginSharedPreferences.edit().putString("address",address).apply()
+
                         val intent= Intent(this@MainActivity,Home::class.java)
                         startActivity(intent)
                         finish()
