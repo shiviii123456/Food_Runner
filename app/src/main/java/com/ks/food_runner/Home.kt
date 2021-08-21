@@ -63,10 +63,10 @@ class Home : AppCompatActivity() {
                     openHome()
                 }
                 R.id.userProfile->{
-                    supportFragmentManager.beginTransaction().replace(R.id.frame,Faq())
+                    supportFragmentManager.beginTransaction().replace(R.id.frame,UserProfile())
                         .addToBackStack("profile")
                         .commit()
-                    supportActionBar?.title="Testing"
+                    supportActionBar?.title="Profile"
                     drawerLayout.closeDrawers()
                 }
                 R.id.orderHistory->{
@@ -87,7 +87,7 @@ class Home : AppCompatActivity() {
                     supportFragmentManager.beginTransaction().replace(R.id.frame,Faq())
                         .addToBackStack("faq")
                         .commit()
-                    supportActionBar?.title="Favouraites Restraunts"
+                    supportActionBar?.title="Frequently Answered Questions"
                     drawerLayout.closeDrawers()
                 }
                 R.id.logout->{
