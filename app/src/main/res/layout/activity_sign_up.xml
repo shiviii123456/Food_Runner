@@ -6,13 +6,7 @@
     android:background="@color/appcolor"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarItem"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
-        android:background="@color/appcolor"
-        />
+
 
     <RelativeLayout
         android:layout_width="match_parent"

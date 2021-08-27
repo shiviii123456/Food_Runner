@@ -27,11 +27,12 @@ class MainActivity : AppCompatActivity() {
     lateinit var signUp:TextView
     lateinit var sharedPreferences: SharedPreferences
     lateinit var loginSharedPreferences: SharedPreferences
+    lateinit var forgotPassword:TextView
     var isLoggedIn=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+         forgotPassword=findViewById(R.id.forgotPassword)
         sharedPreferences=getSharedPreferences(getString(R.string.shared_pref), Context.MODE_PRIVATE)
         loginSharedPreferences=getSharedPreferences(getString(R.string.login_pref),Context.MODE_PRIVATE)
         isLoggedIn=sharedPreferences.getBoolean("isLoggedIn",false)
@@ -43,6 +44,10 @@ class MainActivity : AppCompatActivity() {
            startActivity(intent)
            finish()
        }
+        forgotPassword.setOnClickListener (){
+            val intent=Intent(this@MainActivity,Reset_Password::class.java)
+            startActivity(intent)
+        }
         loginbtn.setOnClickListener(){
             password=findViewById(R.id.password)
             var  pass=password.text.toString()
@@ -78,6 +83,9 @@ class MainActivity : AppCompatActivity() {
                         finish()
                     }
                     else{
+                        password.text=null
+                        mobileNumber.text=null
+
                         Toast.makeText(this@MainActivity,"Invalid Email and Password",Toast.LENGTH_LONG).show()
                     }
                 },
@@ -110,15 +118,9 @@ class MainActivity : AppCompatActivity() {
                 dialog.show()
             }
         }
-
-//        loginbtn.setOnClickListener(){
-//            val intent= Intent(this@MainActivity,Home::class.java)
-//            startActivity(intent)
-//        }
         signUp.setOnClickListener(){
            val intent= Intent(this@MainActivity,SignUp::class.java)
-            startActivity(intent)
-            finish()
+           startActivity(intent)
         }
     }
    public fun sharedPreferencesfunc(){

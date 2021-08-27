@@ -4,32 +4,28 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.os.AsyncTask
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.provider.Settings
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.*
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.google.gson.Gson
 import com.ks.food_runner.Adapter.HomeAdapter
-import com.ks.food_runner.Database.FoodEntity
-import com.ks.food_runner.Database.FoodsDatabase
 import com.ks.food_runner.Model.Restaurant
 import com.ks.food_runner.util.ConnectionManager
 import org.json.JSONException
-import org.json.JSONObject
+import java.util.*
+import kotlin.collections.HashMap
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -47,6 +43,9 @@ class HomeFragment : Fragment() {
     lateinit var recyclerviewRes: RecyclerView
     lateinit var progressbarHome:ProgressBar
     var foodArray= mutableListOf<Restaurant>()
+    var tempList= mutableListOf<Restaurant>()
+    lateinit var searchItem:SearchView
+//    var restrauntSharedPreferences: SharedPreferences?=null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,6 +54,9 @@ class HomeFragment : Fragment() {
         val view=inflater.inflate(R.layout.fragment_home, container, false)
 
         progressbarHome=view.findViewById(R.id.progressbarHome)
+        searchItem=view.findViewById(R.id.searchItem)
+//        restrauntSharedPreferences=context?.getSharedPreferences(getString(R.string.restrauntName),Context.MODE_PRIVATE)
+
         var newRequest= Volley.newRequestQueue(activity as Context)
         var url="http://13.235.250.119/v2/restaurants/fetch_result/"
 
@@ -82,8 +84,36 @@ class HomeFragment : Fragment() {
                             foodArray.add(foodInfo)
                             recyclerviewRes=view.findViewById(R.id.recyclerviewRes)
                             recyclerviewRes.layoutManager=LinearLayoutManager(activity)
-                            recyclerviewRes.adapter=HomeAdapter(activity as Context,foodArray)
+                            recyclerviewRes.adapter=HomeAdapter(activity as Context,tempList)
                         }
+//                        val gson = Gson()
+//                        val jsonObject=gson.toJson(foodArray)
+//                       restrauntSharedPreferences?.edit()?.putString("food",jsonObject)?.apply()
+//                        restrauntSharedPreferences?.edit()?.putString("name",  FoodObject.getString("name"))?.apply()
+                        //new
+                        tempList.addAll(foodArray)
+                        searchItem.setOnQueryTextListener(object:SearchView.OnQueryTextListener{
+                            override fun onQueryTextSubmit(p0: String?): Boolean {
+                                TODO("Not yet implemented")
+                            }
+                            override fun onQueryTextChange(p0: String?): Boolean {
+                                tempList.clear()
+                                val searchText=p0!!.toLowerCase(Locale.getDefault())
+                                if(searchText.isNotEmpty()){
+                                    foodArray.forEach{
+                                        if(it.restaurantName.toLowerCase(Locale.getDefault()).contains(searchText)){
+                                            tempList.add(it)
+                                            recyclerviewRes.adapter!!.notifyDataSetChanged()
+                                        }
+                                    }
+                                }else{
+                                    tempList.clear()
+                                    tempList.addAll(foodArray)
+                                    recyclerviewRes.adapter!!.notifyDataSetChanged()
+                                }
+                                return false
+                            }
+                        })
                     }
                 }
                 catch(e:JSONException){

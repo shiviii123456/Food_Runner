@@ -12,20 +12,20 @@
         android:orientation="vertical"
         android:background="@color/appcolor"
         >
-        <EditText
-            android:id="@+id/search"
+
+        <SearchView
+            android:id="@+id/searchItem"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:padding="10dp"
-            android:background="@drawable/login"
+            android:queryHint="Search"
+            android:iconifiedByDefault="false"
             android:layout_marginRight="25dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:drawableLeft="@drawable/ic_search"
-            android:drawablePadding="10dp"
+            android:background="@drawable/login"
             android:backgroundTint="@color/white"
-            android:hint="Search"
+
             />
     </LinearLayout>
 <androidx.recyclerview.widget.RecyclerView

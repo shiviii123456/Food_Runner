@@ -47,12 +47,9 @@ class RestrauntItemAdapter(val context: Context, val food:List<RestrauntItem>):R
             food[position].itemName,
         )
 
-
             holder.btnItem.setOnClickListener(){
                 var foodArray=TotalItem(context).execute().get()
-//                Toast.makeText(context,"$foodArray",Toast.LENGTH_LONG).show()
                 if(foodArray.size == 0){
-//                    Toast.makeText(context,"Hello",Toast.LENGTH_LONG).show()
                     val insert=DbAsyncCart(context,2,cartEntities).execute().get()
                     if(insert){
                         val color=ContextCompat.getColor(context,R.color.secondarycolor)
@@ -162,13 +159,6 @@ class RestrauntItemAdapter(val context: Context, val food:List<RestrauntItem>):R
 
         }
     }
-//    class TotalFoodItem(val context: Context,var cartEntities:CartEntities): AsyncTask<Void, Void, List<CartEntities>>(){
-//        var db= Room.databaseBuilder(context, FoodsDatabase::class.java,"food-database").build()
-//        override fun doInBackground(vararg p0: Void?): List<CartEntities> {
-//            return  db.foodDao().menuList(cartEntities.foodItemId)
-//
-//        }
-//    }
     class TotalItem(val context: Context): AsyncTask<Void, Void, List<CartEntities>>(){
         var db= Room.databaseBuilder(context, FoodsDatabase::class.java,"food-database").build()
         override fun doInBackground(vararg p0: Void?): List<CartEntities> {

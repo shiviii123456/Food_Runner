@@ -31,6 +31,7 @@ class Home : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        var previousMenuItem:MenuItem?=null
         sharedPreferences = getSharedPreferences(getString(R.string.shared_pref), Context.MODE_PRIVATE)
         loginPreferences=getSharedPreferences(getString(R.string.login_pref),Context.MODE_PRIVATE)
 
@@ -56,6 +57,12 @@ class Home : AppCompatActivity() {
 
         navigationView.setNavigationItemSelectedListener {
 
+            if(previousMenuItem != null){
+                previousMenuItem?.isChecked=false
+            }
+            it.isCheckable=true
+            it.isChecked=true
+            previousMenuItem=it
             var id=it.itemId
 
             when(id){
@@ -64,28 +71,24 @@ class Home : AppCompatActivity() {
                 }
                 R.id.userProfile->{
                     supportFragmentManager.beginTransaction().replace(R.id.frame,UserProfile())
-                        .addToBackStack("profile")
                         .commit()
                     supportActionBar?.title="Profile"
                     drawerLayout.closeDrawers()
                 }
                 R.id.orderHistory->{
                     supportFragmentManager.beginTransaction().replace(R.id.frame,OrderHistory())
-                        .addToBackStack("order History")
                         .commit()
                     supportActionBar?.title="Order History"
                     drawerLayout.closeDrawers()
                 }
                 R.id.favRestraunt->{
                     supportFragmentManager.beginTransaction().replace(R.id.frame,Profile())
-                        .addToBackStack("fav restraunt")
                         .commit()
                     supportActionBar?.title="Favouraites Restraunts"
                     drawerLayout.closeDrawers()
                 }
                 R.id.faq->{
                     supportFragmentManager.beginTransaction().replace(R.id.frame,Faq())
-                        .addToBackStack("faq")
                         .commit()
                     supportActionBar?.title="Frequently Answered Questions"
                     drawerLayout.closeDrawers()
@@ -131,5 +134,20 @@ class Home : AppCompatActivity() {
             .commit()
         supportActionBar?.title="Home"
         drawerLayout.closeDrawers()
+    }
+
+    override fun onBackPressed() {
+        val fragment=supportFragmentManager.findFragmentById(R.id.frame)
+        when(fragment){
+            !is HomeFragment->{
+                 supportFragmentManager.beginTransaction()
+                     .replace(R.id.frame,HomeFragment()).commit()
+                supportActionBar?.title="Home"
+            }
+            else->{
+                super.onBackPressed()
+                finish()
+            }
+        }
     }
 }

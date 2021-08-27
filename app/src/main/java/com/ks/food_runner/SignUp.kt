@@ -79,9 +79,15 @@ class SignUp : AppCompatActivity() {
 
                     val intent= Intent(this@SignUp,Home::class.java)
                     startActivity(intent)
-                    finish()
+                    ActivityCompat.finishAffinity(this@SignUp)
                 }
                 else{
+                    userName.text=null
+                    userCnfPassword.text=null
+                    userPassword.text=null
+                    userMobile.text=null
+                    userEmail.text=null
+                    userAddress.text=null
                     Toast.makeText(this@SignUp,"Already Registered", Toast.LENGTH_LONG).show()
                 }
             },

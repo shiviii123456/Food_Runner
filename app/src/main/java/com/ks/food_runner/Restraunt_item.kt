@@ -9,6 +9,7 @@ import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -105,7 +106,6 @@ class Restraunt_item : AppCompatActivity() {
         else{
             Toast.makeText(this@Restraunt_item,"Some Error occured",Toast.LENGTH_LONG).show()
         }
-
     }
     private fun addToolbar(restrauntName:String?){
         toolbarItem=findViewById(R.id.toolbarItem)
@@ -143,6 +143,18 @@ class Restraunt_item : AppCompatActivity() {
         }
         super.onBackPressed()
     }
+    //here
+    override fun onStop() {
+        var listRestraunt=TotalItemPresent(this@Restraunt_item).execute().get()
+        if(listRestraunt.size != 0){
+            for(i in 0 until listRestraunt.size){
+                RemoveItemPresent(this@Restraunt_item,listRestraunt.get(i)).execute().get()
+            }
+            recyclerviewItem.adapter!!.notifyDataSetChanged()
+        }
+        super.onStop()
+    }
+
     class TotalItemPresent(val context: Context): AsyncTask<Void, Void, List<CartEntities>>(){
         var db= Room.databaseBuilder(context, FoodsDatabase::class.java,"food-database").build()
         override fun doInBackground(vararg p0: Void?): List<CartEntities> {
